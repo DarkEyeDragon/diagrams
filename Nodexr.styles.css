@@ -1,0 +1,84 @@
+/* /Components/BottomPanels.razor.rz.scp.css */
+.bottom-panels[b-e04krw0xgu] {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    width: 100%;
+    font-family: Consolas, monospace;
+}
+
+.search-text-container[b-e04krw0xgu] {
+    display: block;
+    flex: 1;
+    margin: 0;
+    -webkit-text-size-adjust: none;
+    width: 100%;
+    overflow: auto;
+    position: relative;
+}
+
+.replace-output[b-e04krw0xgu] {
+    font-size: 1.1rem;
+    margin: 0;
+    white-space: pre-wrap;
+    color: var(--col-text-medium);
+    font-family: Consolas, monospace;
+}
+/* /Components/NodeTreeBrowser/NodeTreeBrowser.razor.rz.scp.css */
+.browser-container[b-7yfcg7at5m] {
+    height: 70vh;
+    max-width: 90vw;
+    width: 70rem;
+}
+/* /Components/SearchTextHighlight.razor.rz.scp.css */
+.search-text-highlight[b-t4xwqrdj85], .search-textarea[b-t4xwqrdj85] {
+    width: 100%;
+    background-color: transparent;
+    resize: none;
+    margin: 0;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: normal;
+    word-break: break-word;
+}
+
+.search-textarea[b-t4xwqrdj85] {
+    display: block;
+    position: absolute;
+    height: 100%;
+    color: var(--col-text-medium);
+    border: none;
+    white-space: pre-wrap;
+    pointer-events: all;
+    padding: 3px;
+}
+
+.search-text-highlight[b-t4xwqrdj85] {
+    color: transparent;
+    font-size: inherit;
+    line-height: inherit;
+    position: absolute;
+    pointer-events: none;
+}
+
+    .search-text-highlight span[b-t4xwqrdj85], .search-text-highlight mark[b-t4xwqrdj85] {
+        white-space: pre-wrap;
+        font-size: inherit;
+    }
+/* /NodeInputs/InputCollectionView.razor.rz.scp.css */
+.item-button[b-f3ahkhmwj9] {
+    position: relative;
+    background: none;
+    padding: 0 4px;
+    color: var(--col-text-subtle);
+    transition: transform 0.2s;
+}
+
+    .item-button:disabled[b-f3ahkhmwj9] {
+        opacity: 0.5;
+    }
+
+    .item-button:hover:enabled[b-f3ahkhmwj9] {
+        color: var(--col-node-accent);
+        transform: scale(1.2);
+    }

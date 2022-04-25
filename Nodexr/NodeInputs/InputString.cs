@@ -16,7 +16,10 @@ public class InputString : NodeInputBase
         }
     }
 
-    public override int Height => 50;
+    public override int Height => 150;
+    public override int Width => 150;
+
+    public bool Round { get; set; }
 
     public InputString(string contents)
     {

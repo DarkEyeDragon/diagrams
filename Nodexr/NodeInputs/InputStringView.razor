@@ -1,11 +1,13 @@
-﻿@if (!String.IsNullOrEmpty(Input.Title))
-{
-    <div class="node-input-heading">@Input.Title</div>
-}
-<div class="node-input-filled">
-    <input type="text" class="input-field text-monospace" @bind-value="@Input.Value" @bind-value:event="oninput" />
+﻿<div class="circle" style="@style">
+    <p class="mt-5 text-center">@Input.Value</p>
 </div>
-
 @code {
     [Parameter] public InputString Input { get; set; } = null!;
+    private string style = "";
+    protected override Task OnInitializedAsync()
+    {
+        style = $"width: {Input.Width}px; height: {Input.Height}px;";
+        return base.OnInitializedAsync();
+    }
+
 }

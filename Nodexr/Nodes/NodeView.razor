@@ -14,7 +14,6 @@
      @onmousedown="OnMouseDown" @onmousedown:stopPropagation
      @onfocusin="Deselect"
      @ondrop="@(() => NoodleDragService.OnDropNoodle(Data.PrimaryInput))">
-
     <div class="node-title @(Data.IsCollapsed ? "collapsed" : "")"
          style="background-color: var(--col-node-accent);">
         @if (!Data.IsCollapsed)
@@ -112,4 +111,5 @@
         Data.LayoutChanged -= Refresh;
         Data.SelectionChanged -= Refresh;
     }
+
 }

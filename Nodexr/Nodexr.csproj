@@ -40,6 +40,10 @@
     <ProjectReference Include="..\BlazorNodes\BlazorNodes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images" />
+  </ItemGroup>
+
   <!--TS config must be set here (rather than in tsconfig.json) to allow
   separate debug and release configs.-->
   <PropertyGroup Label="Typescript Config">

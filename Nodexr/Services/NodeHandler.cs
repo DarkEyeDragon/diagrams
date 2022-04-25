@@ -37,8 +37,16 @@ public class NodeHandler : INodeHandler
         private set
         {
             // TODO refactor this. The current implementation breaks if the Output node is replaced.
-            if (tree != null) GetOutputNode(tree).OutputChanged -= OnOutputChanged;
-            GetOutputNode(value).OutputChanged += OnOutputChanged;
+            if (tree != null)
+            {
+                var result = GetOutputNode(tree);
+                if(result != null) result.OutputChanged -= OnOutputChanged;
+            }
+            var result2 = GetOutputNode(value);
+            if (result2 != null)
+            {
+                result2.OutputChanged += OnOutputChanged;
+            }
             tree = value;
         }
     }
@@ -156,9 +164,10 @@ public class NodeHandler : INodeHandler
         ForceRefreshNodeGraph();
     }
 
-    private static OutputNode GetOutputNode(NodeTree tree)
+    private static OutputNode? GetOutputNode(NodeTree tree)
     {
-        return tree.Nodes.OfType<OutputNode>().Single();
+        if (!tree.Nodes.Any()) return null;
+        return tree.Nodes.OfType<OutputNode>().SingleOrDefault();
     }
 
     private void OnOutputChanged(object? sender, EventArgs e)
@@ -169,35 +178,10 @@ public class NodeHandler : INodeHandler
     private static NodeTree CreateDefaultNodeTree()
     {
         var tree = new NodeTree();
-        var quoteNode1 = new TextNode() { Pos = new(200, 300) };
-        quoteNode1.Input.Value = "\"";
-        var charSetNode = new CharSetNode() { Pos = new(200, 450) };
-        charSetNode.InputCount.Value = IQuantifiableNode.Reps.ZeroOrMore;
-        charSetNode.InputCharacters.Value = "\"";
-        charSetNode.InputDoInvert.Checked = true;
-        var groupNode = new GroupNode()
-        {
-            Pos = new(500, 300),
-            PreviousNode = quoteNode1,
-        };
-        groupNode.Input.ConnectedNode = charSetNode;
-        var quoteNode2 = new TextNode()
-        {
-            Pos = new(800, 300),
-            PreviousNode = groupNode,
-        };
-        quoteNode2.Input.Value = "\"";
-        var defaultOutput = new OutputNode()
-        {
-            Pos = new(1100, 300),
-            PreviousNode = quoteNode2,
-        };
-
-        tree.AddNode(quoteNode1);
-        tree.AddNode(quoteNode2);
-        tree.AddNode(groupNode);
-        tree.AddNode(charSetNode);
-        tree.AddNode(defaultOutput);
+        var outlineNode = new OutlineNode() { Pos = new(200, 300) };
+        var outlineNode2 = new OutlineNode() { Pos = new(200, 450) };
+        tree.AddNode(outlineNode);
+        tree.AddNode(outlineNode2);
         return tree;
     }
 }

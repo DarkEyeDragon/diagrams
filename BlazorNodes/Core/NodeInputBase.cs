@@ -31,6 +31,7 @@ public abstract class NodeInputBase : INodeInput
     public Func<bool> Enabled { get; set; } = () => true;
 
     public virtual int Height { get; } = 32;
+    public virtual int Width { get; } = 32;
 
     protected virtual void OnValueChanged(object? sender, EventArgs e)
     {

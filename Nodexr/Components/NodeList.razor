@@ -1,24 +1,27 @@
-﻿
-<div class="viewport sidebar panel fancy-scrollbar">
+﻿<div class="viewport sidebar panel fancy-scrollbar">
+    <button>Load</button>
+    <button>Save</button>
     <div class="node-list-heading">Nodes</div>
     @foreach (var category in exampleCategories)
     {
         <div class="node-list-subheading">@category.name</div>
         foreach (var node in category.nodes)
         {
-            <NodeListPreview Data="node" />
+            <NodeListPreview Data="node"/>
         }
     }
 </div>
 
 @code {
-    List<(string name, List<BaseNode> nodes)> exampleCategories = new ()
+
+    List<(string name, List<BaseNode> nodes)> exampleCategories = new()
     {
         ("Basics",
-        new ()
-        {
-            new OutlineNode(),
-            new FilledNode()
-        })
+            new()
+            {
+                new OutlineNode(),
+                new FilledNode()
+            })
     };
+
 }

@@ -46,6 +46,7 @@
             InputProcedural => typeof(InputProceduralView),
             InputRange => typeof(InputRangeView),
             InputString => typeof(InputStringView),
+            InputImage => typeof(InputImageView),
             _ => throw new ArgumentOutOfRangeException($"No view class defined for type {input.GetType()}")
         };
     }

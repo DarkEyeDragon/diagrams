@@ -1,17 +1,14 @@
 ﻿namespace Nodexr.NodeTypes;
 
 using BlazorNodes.Core;
+using NodeInputs;
+using Utils;
 
 public class FilledNode : BaseNode
 {
-    public bool Rounded { get; set; } = true;
-    public override IEnumerable<INodeInput> GetAllInputs()
-    {
-        return new List<INodeInput>();
-    }
+    public override string Title => "Circular Node";
 
-    public FilledNode()
-    {
-        Title = "Filled";
-    }
+    public override string NodeInfo => "";
+
+    [NodeInput] public InputImage Input { get; } = new InputImage { ImagePath = "images/whatson.png", Title = "Test", Description = "Test"};
 }

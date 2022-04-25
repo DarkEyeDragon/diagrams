@@ -1,52 +1,54 @@
-﻿namespace Nodexr.NodeTypes;
-
-using System.Reflection;
+﻿namespace Nodexr.Nodes;
 using BlazorNodes.Core;
-using NodeInputs;
+using Nodexr.NodeInputs;
 
-public abstract class BaseNode : INodeViewModel
+public abstract class BaseNode : NodeViewModelBase<NodeResult>
 {
-    public string Styling { get; set; } = "black 2px solid";
-    public InputProcedural Previous { get; } = new();
-
-    public IInputPort PrimaryInput => Previous;
+    public InputProcedural Previous { get; } = new InputProcedural();
+    public override IInputPort PrimaryInput => Previous;
     public INodeOutput<NodeResult>? PreviousNode
     {
         get => Previous.ConnectedNode;
         set => Previous.ConnectedNode = value;
     }
-    public string NodeInfo { get; }
-    public string Title { get; set; } = "Title";
-    public bool IsCollapsed { get; set; } = false;
-    private Vector2 pos;
 
-    public Vector2 Pos
+    private NodeResult? cachedOutput;
+    public override NodeResult CachedOutput => cachedOutput!;
+
+    public override string OutputTooltip => CachedOutput.Expression;
+
+    public override Vector2 OutputPos => Pos + new Vector2(154, 13);
+
+    public override event EventHandler? OutputChanged;
+
+    protected virtual void OnOutputChanged(EventArgs e) => OutputChanged?.Invoke(this, e);
+
+    protected void OnInputsChanged(object? sender, EventArgs e)
     {
-        get => pos;
-        set
-        {
-            pos = value;
-            CalculateInputsPos();
-        }
-    }    
-    public bool Selected { get; set; }
-    public IEnumerable<INodeInput> NodeInputs { get; }
-    public string OutputTooltip { get; }
-
-    public BaseNode()
-    {
-        var inputProperties = GetType()
-            .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-            .Where(prop => Attribute.IsDefined(prop, typeof(NodeInputAttribute)));
-
-        NodeInputs = inputProperties
-            .Select(prop => prop.GetValue(this))
-            .OfType<INodeInput>()
-            .ToList();
+        cachedOutput = GetOutput();
+        OnOutputChanged(EventArgs.Empty);
     }
 
-    public void CalculateInputsPos()
+    protected BaseNode()
     {
+        Previous.ValueChanged += OnInputsChanged;
+
+        foreach (var input in NodeInputs)
+        {
+            input.ValueChanged += OnInputsChanged;
+            if (input is InputCollection inputColl)
+            {
+                inputColl.InputPositionsChanged += OnLayoutChanged;
+            }
+        }
+
+        OnInputsChanged(this, EventArgs.Empty);
+    }
+
+    /// <inheritdoc/>
+    public override void CalculateInputsPos()
+    {
+        //TODO: refactor using GetHeight() on each input
         Previous.Pos = new Vector2(Pos.x + 2, Pos.y + 13);
         if (IsCollapsed)
         {
@@ -64,26 +66,65 @@ public abstract class BaseNode : INodeViewModel
                         {
                             input2.Pos = new Vector2(Pos.x + 2, Pos.y + startHeight);
                         }
-
                         break;
+                }
+            }
+        }
+        else
+        {
+            int startHeight = 44;
+            //TODO: Support disabled inputs
+            foreach (var input in NodeInputs)
+            {
+                if (input is InputCollection inputColl)
+                {
+                    inputColl.Pos = new Vector2(Pos.x, Pos.y + startHeight);
+                    foreach (var input2 in inputColl.Inputs)
+                    {
+                        input2.Pos = new Vector2(Pos.x, Pos.y + startHeight);
+                        startHeight += input2.Height;
+                    }
+                    startHeight += 28;
+                }
+                else
+                {
+                    input.Pos = new Vector2(Pos.x, Pos.y + startHeight);
+                    startHeight += input.Height;
                 }
             }
         }
     }
 
-    public void OnLayoutChanged(object? sender, EventArgs e)
+    public int GetHeight()
     {
-        CalculateInputsPos();
-        foreach (var input in GetAllInputs().OfType<IInputPort>())
-            input.Refresh();
-        LayoutChanged?.Invoke(this, e);
+        const int baseHeight = 28;
+
+        int inputHeight = NodeInputs
+            .Where(input => input.Enabled())
+            .Select(input => input.Height)
+            .Sum();
+
+        return baseHeight + inputHeight;
+    }
+
+    public override string CssName => Title.Replace(" ", "").ToLowerInvariant();
+    public override string CssColor => $"var(--col-node-{CssName})";
+
+    protected virtual NodeResult GetOutput()
+    {
+        var builder = new NodeResultBuilder();
+        if (Previous.Value != null)
+        {
+            builder.Prepend(Previous.Value);
+        }
+        return builder.Build();
     }
 
     /// <summary>
     /// Get all of the inputs to the node, including the 'previous' input and the sub-inputs of any InputCollections.
     /// InputCollections themselves are not returned.
     /// </summary>
-    public virtual IEnumerable<INodeInput> GetAllInputs()
+    public override IEnumerable<INodeInput> GetAllInputs()
     {
         yield return Previous;
         foreach (var input in NodeInputs)
@@ -99,11 +140,4 @@ public abstract class BaseNode : INodeViewModel
             }
         }
     }
-
-    public event EventHandler? LayoutChanged;
-    public event EventHandler? SelectionChanged;
-    public Vector2 OutputPos => Pos + new Vector2(154, 13);
-    public string CssName { get; }
-    public string CssColor { get; } = "orange";
-    public event EventHandler? OutputChanged;
 }

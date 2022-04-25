@@ -15,9 +15,9 @@
 
 
 @code {
-    [Parameter] public RegexNodeViewModelBase Data { get; set; } = null!;
+    [Parameter] public BaseNode Data { get; set; } = null!;
 
-    string Color => $"var(--col-node-{Data.Title.Replace(" ", "").ToLower()})";
+    string Color => "orange";
 
     void ShowInfoModal()
     {
@@ -28,13 +28,13 @@
 
     void StartNodeDrag(DragEventArgs e)
     {
-        RegexNodeViewModelBase newNode = (RegexNodeViewModelBase)Activator.CreateInstance(Data.GetType())!;
+        BaseNode newNode = (BaseNode)Activator.CreateInstance(Data.GetType())!;
         NodeDragService.OnStartCreateNodeDrag(newNode, e);
     }
 
     void AddNode(Type type)
     {
-        RegexNodeViewModelBase node = (RegexNodeViewModelBase)Activator.CreateInstance(type)!;
+        BaseNode node = (BaseNode)Activator.CreateInstance(type)!;
         NodeHandler.Tree.AddNode(node);
     }
 }

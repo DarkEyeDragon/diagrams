@@ -1,0 +1,9 @@
+﻿<div>
+    @foreach (var exitNodes in Input.ExitNodes)
+    {
+        <p>@exitNodes.Title</p>
+    }
+</div>
+@code {
+    [Parameter] public NodeGroup Input { get; set; } = null!;
+}

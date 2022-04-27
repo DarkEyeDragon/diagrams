@@ -125,26 +125,26 @@
     }
 
     .node .node-input-dot {
-        width: 17px;
-        height: 17px;
+        width: 16px;
+        height: 16px;
         background-color: var(--col-noodle);
         border-radius: 50%;
         position: absolute;
-        top: 5px;
-        left: -12px;
+        top: calc(50% - 8px);
+        left: -8px;
         z-index: 1;
         box-sizing: border-box;
         border: 2px solid var(--col-bg-2);
     }
 
     .node .input-dot-previous {
-        left: -9px;
+        left: -8px;
         background-color: var(--col-node-accent);
     }
 
     .node .node-output-dot {
-        width: 17px;
-        height: 17px;
+        width: 16px;
+        height: 16px;
         background-color: var(--col-node-accent);
         border-radius: 50%;
 
@@ -154,8 +154,8 @@
 
     .node .node-output-dot-parent {
         position: absolute;
-        top: 2px;
-        right: -12px;
+        top: calc(50% - 8px);
+        right: -8px;
         padding: 3px;
         z-index: 1;
         cursor: copy;

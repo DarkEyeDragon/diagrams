@@ -65,7 +65,8 @@ public abstract class NodeViewModelBase : INodeViewModel
             SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
     }
-    public abstract string Title { get; }
+
+    public abstract string Title { get; set; }
     public abstract string OutputTooltip { get; }
 
     public abstract Vector2 OutputPos { get; }

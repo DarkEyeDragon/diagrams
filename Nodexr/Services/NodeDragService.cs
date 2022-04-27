@@ -63,7 +63,7 @@ public class NodeDragService : INodeDragService
         int x = (int)scaledPos[0];
         int y = (int)scaledPos[1];
 
-        this.nodeToDrag.Pos = new Vector2(x - 75, y - 15);
+        this.nodeToDrag.Pos = new Vector2(x - 75, y);
     }
 
     [JSInvokable]

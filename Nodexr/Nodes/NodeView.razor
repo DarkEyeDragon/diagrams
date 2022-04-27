@@ -1,5 +1,4 @@
-﻿
-@inject INodeDragService NodeDragService
+﻿@inject INodeDragService NodeDragService
 @inject INodeHandler NodeHandler
 @inject IModalService Modal
 @inject INoodleDragService NoodleDragService
@@ -12,80 +11,64 @@
      ondragleave="tempNoodle.setInvalid()"
      ondragover="event.preventDefault(); tempNoodle.setValid();"
      @onmousedown="OnMouseDown" @onmousedown:stopPropagation
-     @onfocusin="Deselect"
+                                @onfocusin="Deselect"
      @ondrop="@(() => NoodleDragService.OnDropNoodle(Data.PrimaryInput))">
-    <div class="node-title @(Data.IsCollapsed ? "collapsed" : "")"
-         style="background-color: var(--col-node-accent);">
-        @if (!Data.IsCollapsed)
-        {
-            <button @onclick="ToggleCollapsed" class="collapse-button" title="Collapse"><i class="fas fa-chevron-down"></i></button>
-        }
-        else
-        {
-            <button @onclick="ToggleCollapsed" class="collapse-button" title="Uncollapse" style="top:-2px;"><i class="fas fa-chevron-up"></i></button>
-        }
-
-        <b>@Data.Title</b>
+    <div class="node-content" 
+         @onclick:stopPropagation
+         @onkeydown:stopPropagation>
         <button class="icon-button info-button" title="About this node"
-                @onclick="ShowModal">
-            <i class="fas fa-info-circle"></i>
-        </button>
+                        @onclick="ShowModal">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+        @foreach (INodeInput nodeInput in Data.NodeInputs)
+        {
+            if (nodeInput.Enabled())
+            {
+                <NodeInputView Data="nodeInput"/>
+            }
+        }
     </div>
 
-    @if (!Data.IsCollapsed)
-    {
-        <div class="node-content"
-             @onclick:stopPropagation
-             @onkeydown:stopPropagation
-             @onmousedown:stopPropagation>
-            @foreach (INodeInput nodeInput in Data.NodeInputs)
-            {
-                if (nodeInput.Enabled())
-                {
-                    <NodeInputView Data="nodeInput" />
-                }
-            }
-        </div>
-    }
-
-    <NodeInputDot Input="Data.PrimaryInput" IsPrevious="true" />
+    <NodeInputDot Input="Data.PrimaryInput" IsPrevious="true"/>
 
     @*Output dot*@
     @if (!(Data is OutputNode))
     {
-        <NodeOutputDot Data="Data" />
+        <NodeOutputDot Data="Data"/>
     }
 </div>
 
 @code {
-	[Parameter] public INodeViewModel Data { get; set; } = null!;
 
-	string CssClass => Data.Selected ? "node-selected" : "";
-	string CssTransform => FormattableString.Invariant($"translate({(long)Data.Pos.x}px, {(long)Data.Pos.y}px)");
+    [Parameter]
+    public INodeViewModel Data { get; set; } = null!;
 
-	protected override void OnInitialized()
-	{
-		Data.OutputChanged += Refresh;
-		Data.LayoutChanged += Refresh;
-		Data.SelectionChanged += Refresh;
-	}
+    string CssClass => Data.Selected ? "node-selected" : "";
+    string CssTransform => FormattableString.Invariant($"translate({(long)Data.Pos.x}px, {(long)Data.Pos.y}px)");
 
-	void ToggleCollapsed()
-	{
-		Data.IsCollapsed = !Data.IsCollapsed;
-		Data.OnLayoutChanged(this, EventArgs.Empty);
-	}
+    protected override void OnInitialized()
+    {
+        Data.OutputChanged += Refresh;
+        Data.LayoutChanged += Refresh;
+        Data.SelectionChanged += Refresh;
+    }
 
-	async Task OnMouseDown(MouseEventArgs e)
-	{
-		var isMultiSelect = e.ShiftKey || e.CtrlKey;
-		NodeHandler.Tree.SelectNode(Data, isMultiSelect);
+    void ToggleCollapsed()
+    {
+        Data.IsCollapsed = !Data.IsCollapsed;
+        Data.OnLayoutChanged(this, EventArgs.Empty);
+    }
 
-		if (!isMultiSelect)
-		{
-			NodeDragService.OnStartNodeDrag(Data, e);
-			await JSRuntime.InvokeVoidAsync("NodeDragHandler.startNodeDrag");
-		}
+    async Task OnMouseDown(MouseEventArgs e)
+    {
+        var isMultiSelect = e.ShiftKey || e.CtrlKey;
+        NodeHandler.Tree.SelectNode(Data, isMultiSelect);
+
+        if (!isMultiSelect)
+        {
+            NodeDragService.OnStartNodeDrag(Data, e);
+            await JSRuntime.InvokeVoidAsync("NodeDragHandler.startNodeDrag");
+        }
     }
 
     void ShowModal()

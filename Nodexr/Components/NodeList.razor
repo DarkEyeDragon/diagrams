@@ -19,8 +19,20 @@
         ("Basics",
             new()
             {
-                new OutlineNode(),
-                new FilledNode()
+                new OutlineNode
+                {
+                    Title = "Circle (Outline)",
+                    Rounded = true
+                },
+                new OutlineNode
+                {
+                    Title = "Rectangle (Outline)",
+                    Rounded = false
+                },
+                new SplitterNode
+                {
+                    Title = "Splitter Node"
+                }
             })
     };
 

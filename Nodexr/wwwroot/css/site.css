@@ -223,9 +223,11 @@ app {
 }
 
 input {
-    background-color: var(--col-field);
-    color: var(--col-text-medium);
+    /*background-color: var(--col-field);
+    color: var(--col-text-medium);*/
     border: none;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .textbox {

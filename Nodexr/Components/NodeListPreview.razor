@@ -29,6 +29,12 @@
     void StartNodeDrag(DragEventArgs e)
     {
         BaseNode newNode = (BaseNode)Activator.CreateInstance(Data.GetType())!;
+        newNode.Title = Data.Title;
+        //TODO Reevaluate
+        if (newNode is OutlineNode outlineNode && Data is OutlineNode dataNode)
+        {
+            outlineNode.Rounded = dataNode.Rounded;
+        }
         NodeDragService.OnStartCreateNodeDrag(newNode, e);
     }
 

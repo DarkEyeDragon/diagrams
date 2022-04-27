@@ -1,12 +1,25 @@
-﻿<div class="circle" style="@style">
-    <p class="mt-5 text-center">@Input.Value</p>
+﻿<div class="@clazz" style="@style">
+    <input class="@inputClass" @bind="Input.Value" placeholder="@Input.Value"/>
 </div>
 @code {
     [Parameter] public InputString Input { get; set; } = null!;
+    
     private string style = "";
+    private string clazz = "";
+    private string inputClass = "text-center";
     protected override Task OnInitializedAsync()
     {
-        style = $"width: {Input.Width}px; height: {Input.Height}px;";
+        if (Input.Round)
+        {
+            clazz = "circle";
+            inputClass += " mt-5";
+            style = $"width: {Input.Width}px; height: {Input.Height}px;";
+        }
+        else
+        {
+            clazz = "rectangle";
+            inputClass += " mt-2";
+        }
         return base.OnInitializedAsync();
     }
 

@@ -34,7 +34,7 @@ public class NodeTreeBrowserService
     {
         if (SelectedNodeTree is null)
             return;
-        nodeHandler.TryCreateTreeFromRegex(SelectedNodeTree.Expression);
+        //nodeHandler.TryCreateTreeFromRegex(SelectedNodeTree.Expression);
         //TODO: Load search/replace strings
     }
 

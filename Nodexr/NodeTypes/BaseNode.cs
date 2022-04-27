@@ -107,7 +107,8 @@ public abstract class BaseNode : NodeViewModelBase<NodeResult>
         return baseHeight + inputHeight;
     }
 
-    public override string CssName => Title.Replace(" ", "").ToLowerInvariant();
+    public override string Title { get; set; } = "Dummy Text";
+    public override string CssName => "text";
     public override string CssColor => $"var(--col-node-{CssName})";
 
     protected virtual NodeResult GetOutput()

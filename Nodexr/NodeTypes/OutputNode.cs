@@ -4,7 +4,7 @@ using Nodexr.NodeInputs;
 
 public class OutputNode : RegexNodeViewModelBase
 {
-    public override string Title => "Output";
+    public override string Title { get; set; } = "Output";
 
     public override string NodeInfo => "The final output of your Regex. " +
         "Use the \"Starts at\" and \"Ends at\" options to only include matches in a certain position" +
@@ -75,9 +75,6 @@ public class OutputNode : RegexNodeViewModelBase
             case Mode.EndLine: builder.Append("$", this); break;
             case Mode.WordBound: builder.Append("\\b", this); break;
         }
-
-        if (PreviousNode is OrNode)
-            builder.StripNonCaptureGroup();
         return builder;
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace Nodexr.Services;
 using Microsoft.AspNetCore.Components;
 using Nodexr.NodeTypes;
-using Nodexr.RegexParsers;
 using Microsoft.AspNetCore.WebUtilities;
 using Blazored.Toast.Services;
 using BlazorNodes.Core;
@@ -20,7 +19,6 @@ public interface INodeHandler
     void DeleteSelectedNodes();
     void ForceRefreshNodeGraph();
     void ForceRefreshNoodles();
-    void TryCreateTreeFromRegex(string regex);
     void RevertPreviousParse();
 }
 
@@ -76,54 +74,9 @@ public class NodeHandler : INodeHandler
     public NodeHandler(NavigationManager navManager, IToastService toastService)
     {
         this.toastService = toastService;
-
-        var uriParams = QueryHelpers.ParseQuery(navManager.ToAbsoluteUri(navManager.Uri).Query);
-        if (uriParams.TryGetValue("parse", out var parseString))
-        {
-            TryCreateTreeFromRegex(parseString[0]);
-        }
-
         if (Tree is null)
         {
             Tree = CreateDefaultNodeTree();
-        }
-    }
-
-    /// <summary>
-    /// Parses a Regular Expression and creates a node tree from it. The previous <c>Tree</c> is then overwritten by the new one.
-    /// </summary>
-    /// <param name="regex">The regular expression to parse, in string format</param>
-    /// <returns>Whether or not the parse attempt succeeded</returns>
-    public void TryCreateTreeFromRegex(string regex)
-    {
-        var parseResult = RegexParser.Parse(regex);
-
-        if (parseResult.Success)
-        {
-            treePrevious = tree;
-            Tree = parseResult.Value;
-            ForceRefreshNodeGraph();
-            OnOutputChanged(this, EventArgs.Empty);
-
-            if (CachedOutput.Expression == regex)
-            {
-                var fragment = Components.ToastButton.GetRenderFragment(RevertPreviousParse, "Revert to previous");
-                toastService.ShowSuccess(fragment, "Converted to node tree successfully");
-            }
-            else
-            {
-                var fragment = Components.ToastButton.GetRenderFragment(
-                    RevertPreviousParse,
-                    "Revert to previous",
-                    "Your expression was parsed, but the resulting output is slighty different to your input. " +
-                        "This is most likely due to a simplification that has been performed automatically.\n");
-                toastService.ShowInfo(fragment, "Converted to node tree");
-            }
-        }
-        else
-        {
-            toastService.ShowError(parseResult.Error?.ToString(), "Couldn't parse input");
-            Console.WriteLine("Couldn't parse input: " + parseResult.Error);
         }
     }
 
